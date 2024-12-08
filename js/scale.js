@@ -3,7 +3,7 @@ const MIN_SCALE = 25;
 const MAX_SCALE = 100;
 const DEFAULT_SCALE = MAX_SCALE;
 
-const uploadImg = document.querySelector('.img-upload__preview img');
+const uploadImage = document.querySelector('.img-upload__preview img');
 const scaleControlValue = document.querySelector('.scale__control--value');
 const scaleSmallerButton = document.querySelector('.scale__control--smaller');
 const scaleBiggerButton = document.querySelector('.scale__control--bigger');
@@ -12,7 +12,7 @@ let currentScale = DEFAULT_SCALE;
 
 const updateScale = () => {
   scaleControlValue.value = `${currentScale}%`;
-  uploadImg.style.transform = `scale(${currentScale / 100})`;
+  uploadImage.style.transform = `scale(${currentScale / 100})`;
 };
 
 function onSmallerButtonClick () {

@@ -1,1 +1,2 @@
-import './miniatures.js';
+import {renderingThumbnails} from './thumbnails.js';
+renderingThumbnails();

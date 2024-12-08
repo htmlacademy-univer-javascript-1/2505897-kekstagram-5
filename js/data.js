@@ -1,4 +1,4 @@
-import {getRandomInteger, makeUniqueId, getRandomArrayElement} from './util.js';
+import {getRandomInteger, getRandomArrayElement} from './util.js';
 
 const NAMES = [
   'Владислав',
@@ -16,24 +16,21 @@ const MESSAGES = [
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
 ];
 
-const DESCRIPTION = [
+const DESCRIPTIONS = [
   'Отличная работа!',
   'Прекрасно!',
   'Это просто шедевр!',
   'Восхитительно!',
 ];
 
-const randomId = [];
-const randomIdComments = [];
-const randomUrl = [];
 
 function generateComments () {
   const comments = [];
   const countComments = getRandomInteger(0,30);
   for (let i = 0; i < countComments; i++) {
     comments.push ({
-      id: makeUniqueId(randomIdComments, 0, 30, 0, 30)[i],
-      avatar: 'img/avatar-${getRandomInteger(1,6)}.svg',
+      id: i,
+      avatar: `img/avatar-${getRandomInteger(1,6)}.svg`,
       message: getRandomArrayElement(MESSAGES),
       name: getRandomArrayElement(NAMES),
     });
@@ -44,11 +41,11 @@ function generateComments () {
 function generatePhotos() {
   const photos = [];
 
-  for (let i = 0; i <= makeUniqueId(randomId, 0, 25, 1, 25).length - 1; i++) {
+  for (let i = 1; i <= 25; i++) {
     photos.push ({
-      id: makeUniqueId(randomId, 0, 25, 1, 25)[i],
-      url: 'photos/${makeUniqueId(randomUrl, 0, 25, 1, 25)[i]}.jpg',
-      description: getRandomArrayElement(DESCRIPTION),
+      id: i,
+      url: `photos/${i}.jpg`,
+      description: getRandomArrayElement(DESCRIPTIONS),
       likes: getRandomInteger(15, 200),
       comments: generateComments(),
     });
@@ -56,4 +53,4 @@ function generatePhotos() {
   return photos;
 }
 
-console.log(generatePhotos());
+export{generatePhotos};

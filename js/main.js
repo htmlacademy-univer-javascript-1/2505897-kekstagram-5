@@ -1,2 +1,1 @@
-import {generatePhotos} from './data.js';
-generatePhotos();
+import './miniatures.js';

@@ -1,4 +1,4 @@
-const FILTERS = {
+const Effects = {
   none: {style: 'none', min: 0, max: 100, step: 1, unit: '' },
   sepia: {style: 'sepia', min: 0, max: 1, step: 0.1, unit: '' },
   chrome: {style: 'grayscale', min: 0, max: 1, step: 0.1, unit: '' },
@@ -6,15 +6,15 @@ const FILTERS = {
   phobos: {style: 'blur', min: 0, max: 3, step: 0.1, unit: 'px' },
   heat: {style: 'brightness', min: 1, max: 3, step: 0.1, unit: '' },
 };
-const DEFAULT_FILTER = FILTERS.none;
+const DEFAULT_EFFECT = Effects.none;
 
+let currentEffect = DEFAULT_EFFECT;
 const uploadImg = document.querySelector('.img-upload__preview img');
-const filtersList = document.querySelector('.img-upload__effects');
+const effectsList = document.querySelector('.img-upload__effects');
 const slider = document.querySelector('.effect-level__slider');
-const filterLevel = document.querySelector('.img-upload__effect-level');
-const filterLevelValue = document.querySelector('.effect-level__value');
+const effectLevel = document.querySelector('.img-upload__effect-level');
+const effectLevelValue = document.querySelector('.effect-level__value');
 
-let currentFilter = DEFAULT_FILTER;
 
 noUiSlider.create(slider, {
   range: { min: 0, max: 1 },
@@ -27,42 +27,40 @@ noUiSlider.create(slider, {
   },
 });
 
-
-const isDefaultFilter = () => currentFilter === DEFAULT_FILTER;
+const isDefaultEffect = () => currentEffect === DEFAULT_EFFECT;
 
 const updateSliderOptions = () => {
   slider.noUiSlider.updateOptions({
-    range: { min: currentFilter.min, max: currentFilter.max },
-    start: currentFilter.max,
-    step: currentFilter.step,
+    range: {min: currentEffect.min, max: currentEffect.max},
+    start: currentEffect.max,
+    step: currentEffect.step,
   });
 
-  filterLevel.classList.toggle('hidden', isDefaultFilter());
+  effectLevel.classList.toggle('hidden', isDefaultEffect());
 };
 
 slider.noUiSlider.on('update', () => {
   const sliderValue = slider.noUiSlider.get();
-  uploadImg.style.filter = isDefaultFilter()
-    ? DEFAULT_FILTER.style
-    : `${currentFilter.style}(${sliderValue}${currentFilter.unit})`;
-  filterLevelValue.value = sliderValue;
+  uploadImg.style.filter = isDefaultEffect()
+    ? DEFAULT_EFFECT.style
+    : `${currentEffect.style}(${sliderValue}${currentEffect.unit})`;
+  effectLevelValue.value = sliderValue;
 });
 
-
-const handleFiltersChange = (evt) => {
+const handleEffectsChange = (evt) => {
   if (!evt.target.classList.contains('effects__radio')) {
     return;
   }
-  currentFilter = FILTERS[evt.target.value];
+  currentEffect = Effects[evt.target.value];
   uploadImg.className = `effects__preview--${evt.target.value}`;
   updateSliderOptions();
 };
 
-const resetFilters = () => {
-  currentFilter = DEFAULT_FILTER;
+const resetEffects = () => {
+  currentEffect = DEFAULT_EFFECT;
   updateSliderOptions();
 };
 
-filtersList.addEventListener('change', handleFiltersChange);
+effectsList.addEventListener('change', handleEffectsChange);
 
-export {resetFilters};
+export {resetEffects};

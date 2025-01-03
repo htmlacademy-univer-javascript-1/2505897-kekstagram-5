@@ -2,14 +2,14 @@ import {isEscapeKey} from './util.js';
 
 const COMMENTS_TO_SHOW = 5;
 
-const body = document.querySelector('body');
-const bigPictureElement = document.querySelector('.big-picture');
-const commentElement = document.querySelector('.social__comment');
-const commentListElement = bigPictureElement.querySelector('.social__comments');
-const commentsLoaderElement = bigPictureElement.querySelector('.comments-loader');
-const commentCountElement = bigPictureElement.querySelector('.social__comment-count');
-const bigPictureCloseElement = bigPictureElement.querySelector('.big-picture__cancel');
 let currentCommentCount = 0;
+const bodyElement = document.querySelector('body');
+const bigPhotoElement = document.querySelector('.big-picture');
+const commentElement = document.querySelector('.social__comment');
+const commentListElement = bigPhotoElement.querySelector('.social__comments');
+const commentsLoaderElement = bigPhotoElement.querySelector('.comments-loader');
+const commentCountElement = bigPhotoElement.querySelector('.social__comment-count');
+const bigPhotoCloseElement = bigPhotoElement.querySelector('.big-picture__cancel');
 
 
 const createComment = ({avatar, name, message}) => {
@@ -17,11 +17,10 @@ const createComment = ({avatar, name, message}) => {
   comment.querySelector('.social__picture').src = avatar;
   comment.querySelector('.social__picture').alt = name;
   comment.querySelector('.social__text').textContent = message;
-
   return comment;
 };
 
-const renderingComments = (comments) => {
+const renderComments = (comments) => {
   const lastIndex = Math.min(currentCommentCount + COMMENTS_TO_SHOW, comments.length);
 
   const fragment = document.createDocumentFragment();
@@ -29,9 +28,7 @@ const renderingComments = (comments) => {
     fragment.appendChild(createComment(comments[i]));
   }
   commentListElement.appendChild(fragment);
-
   currentCommentCount = lastIndex;
-
   commentCountElement.textContent = `${currentCommentCount} из ${comments.length} комментариев`;
 
   if (currentCommentCount >= comments.length) {
@@ -39,49 +36,48 @@ const renderingComments = (comments) => {
   }
 };
 
-const renderingPictureData = ({url, likes, description}) => {
-  bigPictureElement.querySelector('.big-picture__img img').src = url;
-  bigPictureElement.querySelector('.big-picture__img img').alt = description;
-  bigPictureElement.querySelector('.likes-count').textContent = likes;
-  bigPictureElement.querySelector('.social__caption').textContent = description;
+const renderPhotoData = ({url, likes, description}) => {
+  bigPhotoElement.querySelector('.big-picture__img img').src = url;
+  bigPhotoElement.querySelector('.big-picture__img img').alt = description;
+  bigPhotoElement.querySelector('.likes-count').textContent = likes;
+  bigPhotoElement.querySelector('.social__caption').textContent = description;
 };
 
-const openBigPicture = (data) => {
-  bigPictureElement.classList.remove('hidden');
-  body.classList.add('modal-open');
+const openBigPhoto = (data) => {
+  bigPhotoElement.classList.remove('hidden');
+  bodyElement.classList.add('modal-open');
   commentsLoaderElement.classList.remove('hidden');
 
   currentCommentCount = 0;
-  renderingPictureData(data);
+  renderPhotoData(data);
   commentListElement.innerHTML = '';
-  renderingComments(data.comments);
+  renderComments(data.comments);
 
   commentsLoaderElement.onclick = () => {
-    renderingComments(data.comments);
+    renderComments(data.comments);
   };
 
   document.addEventListener('keydown', onDocumentKeydown);
 };
 
-const closeBigPicture = () => {
-  bigPictureElement.classList.add('hidden');
-  body.classList.remove('modal-open');
+const closeBigPhoto = () => {
+  bigPhotoElement.classList.add('hidden');
+  bodyElement.classList.remove('modal-open');
   commentsLoaderElement.onclick = null;
   document.removeEventListener('keydown', onDocumentKeydown);
+};
+
+const onCloseBigPhoto = () => {
+  closeBigPhoto();
 };
 
 function onDocumentKeydown(evt) {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
-    closeBigPicture();
+    closeBigPhoto();
   }
 }
 
-const onCloseBigPicture = () => {
-  closeBigPicture();
-};
+bigPhotoCloseElement.addEventListener('click', onCloseBigPhoto);
 
-bigPictureCloseElement.addEventListener('click', onCloseBigPicture);
-
-
-export {openBigPicture};
+export {openBigPhoto};

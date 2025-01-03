@@ -1,10 +1,9 @@
-import {generatePhotos} from './data.js';
+import {getPhotos} from './fetch.js';
+import {showLoadError} from './messages.js';
 import {openBigPicture} from './full-size_pictures.js';
 
-const photos = generatePhotos();
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 const picturesListElement = document.querySelector('.pictures');
-
 
 const createThumbnail = ({url, description, likes, comments}) => {
   const picturesElement = pictureTemplate.cloneNode(true);
@@ -12,24 +11,21 @@ const createThumbnail = ({url, description, likes, comments}) => {
   picturesElement.querySelector('.picture__img').alt = description;
   picturesElement.querySelector('.picture__likes').textContent = likes;
   picturesElement.querySelector('.picture__comments').textContent = comments.length;
-
   return picturesElement;
 };
 
-const renderingThumbnails = () => {
+const renderThumbnails = (data) => {
   const fragment = document.createDocumentFragment();
-  photos.forEach((photo) => {
+  data.forEach((photo) => {
     const picturesElement = createThumbnail(photo);
 
     picturesElement.addEventListener('click', (evt) => {
       evt.preventDefault();
       openBigPicture(photo);
     });
-
     fragment.appendChild(picturesElement);
   });
-
   picturesListElement.appendChild(fragment);
 };
 
-export {renderingThumbnails};
+getPhotos(renderThumbnails, showLoadError);

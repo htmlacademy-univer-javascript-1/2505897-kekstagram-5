@@ -1,26 +1,30 @@
 import {isEscapeKey} from './util.js';
 import {resetScale} from './scale.js';
 import {resetFilters} from './filters.js';
+import {showError, showSuccess} from './messages.js';
+import {setPhoto} from './fetch.js';
 
-const HASHTAGS_MAX_COUNT = 5;
+
 const VALID_HASHTAG = /^#[a-zа-я0-9]{1,19}|^$/i;
+const HASHTAGS_MAX_COUNT = 5;
 const HASHTAG_ERROR_MESSAGE = {
   invalidHashtag: 'Содержит недопустимые символы или неверный формат',
+  hashtagsMaxCount:`Максимальное количество хеш-тегов - ${HASHTAGS_MAX_COUNT}`,
   replayHashtag: 'Хэш-теги не должны повторяться',
-  hashtagsMaxCount:`Максимальное количество хеш-тегов - ${HASHTAGS_MAX_COUNT}`
 };
-const CHARACTERS_MAX_COUNT = 140;
+const CHARACTERS_MAX_COUNT = 175;
 
 const body = document.querySelector('body');
-const form = document.querySelector('.img-upload__form');
+const formUpload = document.querySelector('.img-upload__form');
 const uploadInput = document.querySelector('.img-upload__input');
 const closeUploadFormButton = document.querySelector('.img-upload__cancel');
 const imgUploadOverlay = document.querySelector('.img-upload__overlay');
 const hashtagInput = document.querySelector('.text__hashtags');
 const descriptionInput = document.querySelector('.text__description');
+const submitFormButton = document.querySelector('.img-upload__submit');
 
 
-const pristine = new Pristine(form, {
+const pristine = new Pristine(formUpload, {
   classTo: 'img-upload__field-wrapper',
   errorTextParent: 'img-upload__field-wrapper',
 });
@@ -50,6 +54,25 @@ const onDocumentKeydown = (evt) => {
   }
 };
 
+function onSubmite(evt) {
+  evt.preventDefault();
+  submitFormButton.disabled = true;
+
+  if (pristine.validate()) {
+    setPhoto(
+      () => {
+        showSuccess();
+        openUploadForm();
+        submitFormButton.disabled = false;
+      },
+      () => {
+        showError();
+        submitFormButton.disabled = false;
+      },
+      new FormData(formUpload)
+    );
+  }
+}
 function openUploadForm() {
   imgUploadOverlay.classList.remove('hidden');
   body.classList.remove('modal-open');
@@ -63,7 +86,7 @@ function onOpenUploadForm() {
 }
 
 function closeUploadForm() {
-  form.reset();
+  formUpload.reset();
   pristine.reset();
   imgUploadOverlay.classList.add('hidden');
   body.classList.remove('modal-open');
@@ -75,4 +98,5 @@ function onCloseUploadForm() {
 }
 
 uploadInput.addEventListener('change', onOpenUploadForm);
+submitFormButton.addEventListener('click', onSubmite);
 closeUploadFormButton.addEventListener('click', onCloseUploadForm);

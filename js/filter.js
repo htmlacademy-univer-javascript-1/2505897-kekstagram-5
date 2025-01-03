@@ -5,7 +5,7 @@ import {showLoadError} from './message.js';
 
 const RANDOM_PHOTOS_LIMIT = 10;
 const TIMEOUT = 500;
-const Filter = {
+const FilterType = {
   DEFAULT: 'default',
   RANDOM: 'random',
   DISCUSSED: 'discussed',
@@ -40,13 +40,13 @@ const getDiscussedPhotos = (pictures) => pictures.slice().sort((a, b) => b.comme
 const onFilterChange = debounce((filter, button) => {
   let filteredPhotos;
   switch (filter) {
-    case Filter.DEFAULT:
+    case FilterType.DEFAULT:
       filteredPhotos = photos;
       break;
-    case Filter.RANDOM:
+    case FilterType.RANDOM:
       filteredPhotos = getRandomPhotos(photos);
       break;
-    case Filter.DISCUSSED:
+    case FilterType.DISCUSSED:
       filteredPhotos = getDiscussedPhotos(photos);
       break;
   }
@@ -54,9 +54,9 @@ const onFilterChange = debounce((filter, button) => {
   setActiveFilterButton(button);
 }, TIMEOUT);
 
-filterDefaultButton.addEventListener('click', () => onFilterChange('default', filterDefaultButton));
-filterRandomButton.addEventListener('click', () => onFilterChange('random', filterRandomButton));
-filterDiscussedButton.addEventListener('click', () => onFilterChange('discussed', filterDiscussedButton));
+filterDefaultButton.addEventListener('click', () => onFilterChange(FilterType.DEFAULT, filterDefaultButton));
+filterRandomButton.addEventListener('click', () => onFilterChange(FilterType.RANDOM, filterRandomButton));
+filterDiscussedButton.addEventListener('click', () => onFilterChange(FilterType.DISCUSSED, filterDiscussedButton));
 
 getPhotos((data) => {
   photos = data;

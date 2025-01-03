@@ -1,31 +1,32 @@
-import {openBigPicture} from './full-size_pictures.js';
+import {openBigPhoto} from './full-size_pictures.js';
 
+const photoTemplate = document.querySelector('#picture').content.querySelector('.picture');
+const photosListElement = document.querySelector('.pictures');
 
-const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
-const picturesListElement = document.querySelector('.pictures');
 
 const createThumbnail = ({url, description, likes, comments}) => {
-  const picturesElement = pictureTemplate.cloneNode(true);
-  picturesElement.querySelector('.picture__img').src = url;
-  picturesElement.querySelector('.picture__img').alt = description;
-  picturesElement.querySelector('.picture__likes').textContent = likes;
-  picturesElement.querySelector('.picture__comments').textContent = comments.length;
-  return picturesElement;
+  const photosElement = photoTemplate.cloneNode(true);
+  photosElement.querySelector('.picture__img').src = url;
+  photosElement.querySelector('.picture__img').alt = description;
+  photosElement.querySelector('.picture__likes').textContent = likes;
+  photosElement.querySelector('.picture__comments').textContent = comments.length;
+
+  return photosElement;
 };
 
-const renderThumbnails = (photosToRender) => {
-  const existingPictures = picturesListElement.querySelectorAll('.picture'); // Находим все элементы с классом 'picture'
-  existingPictures.forEach((picture) => picture.remove()); // Удаляем только их
+const renderThumbnails = (photos) => {
+  const existingPhotos = photosListElement.querySelectorAll('.picture'); // Находим все элементы с классом 'picture'
+  existingPhotos.forEach((picture) => picture.remove()); // Удаляем только их
   const fragment = document.createDocumentFragment();
-  photosToRender.forEach((photo) => {
+  photos.forEach((photo) => {
     const picturesElement = createThumbnail(photo);
     picturesElement.addEventListener('click', (evt) => {
       evt.preventDefault();
-      openBigPicture(photo);
+      openBigPhoto(photo);
     });
     fragment.appendChild(picturesElement);
   });
-  picturesListElement.appendChild(fragment);
+  photosListElement.appendChild(fragment);
 };
 
 export{renderThumbnails};

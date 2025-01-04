@@ -1,22 +1,29 @@
-const SUPPORTED_FILE_TYPES = ['jpg', 'jpeg', 'png'];
+const SUPPORTED_FILE_EXTENSIONS = ['jpg', 'jpeg', 'png'];
 
-const uploadInput = document.querySelector('.img-upload__input');
-const imgUploadPreview = document.querySelector('.img-upload__preview img');
-const effectPreviews = document.querySelectorAll('.effects__item .effects__preview');
+const fileInputElement = document.querySelector('.img-upload__input');
+const imagePreviewElement = document.querySelector('.img-upload__preview img');
+const effectPreviewElements = document.querySelectorAll('.effects__item .effects__preview');
 
+const handleFileChange = () => {
+  const file = fileInputElement.files[0];
+  const fileName = file.name.toLowerCase();
+  let isValidFile = false;
 
-const onUploadPhotoForm = () => {
-  const selectedFile = uploadInput.files[0];
-  const fileNameLower = selectedFile.name.toLowerCase();
-  const isSupported = SUPPORTED_FILE_TYPES.some((type) => fileNameLower.endsWith(type));
+  for (let i = 0; i < SUPPORTED_FILE_EXTENSIONS.length; i++) {
+    if (fileName.endsWith(SUPPORTED_FILE_EXTENSIONS[i])) {
+      isValidFile = true;
+      break;
+    }
+  }
 
-  if (isSupported) {
-    imgUploadPreview.src = URL.createObjectURL(selectedFile);
+  if (isValidFile) {
+    const objectURL = URL.createObjectURL(file);
+    imagePreviewElement.src = objectURL;
 
-    effectPreviews.forEach((previewElement) => {
-      previewElement.style.backgroundImage = `url('${imgUploadPreview.src}')`;
+    effectPreviewElements.forEach((previewElement) => {
+      previewElement.style.backgroundImage = `url('${objectURL}')`;
     });
   }
 };
 
-uploadInput.addEventListener('change', onUploadPhotoForm);
+fileInputElement.addEventListener('change', handleFileChange);

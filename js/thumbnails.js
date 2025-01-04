@@ -3,7 +3,6 @@ import {openBigPhoto} from './full-size_pictures.js';
 const photoTemplate = document.querySelector('#picture').content.querySelector('.picture');
 const photosListElement = document.querySelector('.pictures');
 
-
 const createThumbnail = ({url, description, likes, comments}) => {
   const photosElement = photoTemplate.cloneNode(true);
   photosElement.querySelector('.picture__img').src = url;
@@ -14,9 +13,7 @@ const createThumbnail = ({url, description, likes, comments}) => {
   return photosElement;
 };
 
-const renderThumbnails = (photos) => {
-  const existingPhotos = photosListElement.querySelectorAll('.picture'); // Находим все элементы с классом 'picture'
-  existingPhotos.forEach((picture) => picture.remove()); // Удаляем только их
+const createThumbnailsFragment = (photos) => {
   const fragment = document.createDocumentFragment();
   photos.forEach((photo) => {
     const picturesElement = createThumbnail(photo);
@@ -26,7 +23,15 @@ const renderThumbnails = (photos) => {
     });
     fragment.appendChild(picturesElement);
   });
+  return fragment;
+};
+
+const renderThumbnails = (photos) => {
+  const existingPhotos = photosListElement.querySelectorAll('.picture');
+  existingPhotos.forEach((picture) => picture.remove());
+
+  const fragment = createThumbnailsFragment(photos);
   photosListElement.appendChild(fragment);
 };
 
-export{renderThumbnails};
+export {renderThumbnails};

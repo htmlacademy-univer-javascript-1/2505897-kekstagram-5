@@ -1,40 +1,36 @@
-const STEP_SCALE = 25;
-const MIN_SCALE = 25;
-const MAX_SCALE = 100;
-const DEFAULT_SCALE = MAX_SCALE;
+const SCALE_INCREMENT = 25;
+const MIN_SCALE_LIMIT = 25;
+const MAX_SCALE_LIMIT = 100;
+const DEFAULT_SCALE = MAX_SCALE_LIMIT;
 
-let currentScale = DEFAULT_SCALE;
-const uploadImg = document.querySelector('.img-upload__preview img');
-const scaleControlValue = document.querySelector('.scale__control--value');
-const scaleSmallerButton = document.querySelector('.scale__control--smaller');
-const scaleBiggerButton = document.querySelector('.scale__control--bigger');
-
+let scalePercentage = DEFAULT_SCALE;
+const previewImage = document.querySelector('.img-upload__preview img');
+const scaleValueDisplay = document.querySelector('.scale__control--value');
+const decreaseButton = document.querySelector('.scale__control--smaller');
+const increaseButton = document.querySelector('.scale__control--bigger');
 
 const updateScale = () => {
-  scaleControlValue.value = `${currentScale}%`;
-  uploadImg.style.transform = `scale(${currentScale / 100})`;
+  scaleValueDisplay.value = `${scalePercentage}%`;
+  previewImage.style.transform = `scale(${scalePercentage / 100})`;
 };
 
-const onSmallerButtonClick = () => {
-  if (currentScale > MIN_SCALE) {
-    currentScale -= STEP_SCALE;
+decreaseButton.addEventListener('click', () => {
+  if (scalePercentage > MIN_SCALE_LIMIT) {
+    scalePercentage -= SCALE_INCREMENT;
     updateScale();
   }
-};
+});
 
-const onBiggerButtonClick = () => {
-  if (currentScale < MAX_SCALE) {
-    currentScale += STEP_SCALE;
+increaseButton.addEventListener('click', () => {
+  if (scalePercentage < MAX_SCALE_LIMIT) {
+    scalePercentage += SCALE_INCREMENT;
     updateScale();
   }
-};
+});
 
 const resetScale = () => {
-  currentScale = DEFAULT_SCALE;
+  scalePercentage = DEFAULT_SCALE;
   updateScale();
 };
-
-scaleSmallerButton.addEventListener('click', onSmallerButtonClick);
-scaleBiggerButton.addEventListener('click', onBiggerButtonClick);
 
 export {resetScale};

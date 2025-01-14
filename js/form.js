@@ -2,16 +2,16 @@ import {isEscapeKey} from './util.js';
 import {resetScale} from './scale.js';
 import {resetEffects} from './effects.js';
 import {setPhoto} from './fetch.js';
-import {showError, showSuccess} from './message.js';
+import {showError, showSuccess, showLoadFormError} from './message.js';
 import './new-photo.js';
 
 const HASHTAGS_MAX_COUNT = 5;
 const CHARACTERS_MAX_COUNT = 140;
-const VALID_HASHTAG = /^#[a-zа-я0-9]{1,19}|^$/i;
+const VALID_HASHTAG = /^#[a-zа-яё0-9]{1,19}$/i;
 const HashtagErrorMessage = {
   INVALID_HASHTAG: 'Содержит недопустимые символы или неверный формат',
   REPLAY_HASHTAG: 'Хэш-теги не должны повторяться',
-  HASHTAGS_MAX_COUNT: `Максимальное количество хеш-тегов - ${HASHTAGS_MAX_COUNT}`,
+  HASHTAGS_MAX_COUNT:`Максимальное количество хеш-тегов - ${HASHTAGS_MAX_COUNT}`,
   MAX_COMMENT_LENGTH: `Максимальная длина ${CHARACTERS_MAX_COUNT} символов`
 };
 
@@ -30,7 +30,7 @@ const pristine = new Pristine(form, {
   errorTextParent: 'img-upload__field-wrapper',
 });
 
-const shareHashtags = (input) => input.toLowerCase().trim().split(' ');
+const shareHashtags = (input) => input.toLowerCase().trim().split(' ').filter((tag) => Boolean(tag.length));
 const isHashtagsValid = (input) => shareHashtags(input).every((tag) => VALID_HASHTAG.test(tag));
 const isHashtagsUnique = (input) => shareHashtags(input).length === new Set(shareHashtags(input)).size;
 const isHashtagsLimited = (input) => shareHashtags(input).length <= HASHTAGS_MAX_COUNT;
@@ -40,11 +40,11 @@ pristine.addValidator(hashtagInput, isHashtagsUnique, HashtagErrorMessage.REPLAY
 pristine.addValidator(hashtagInput, isHashtagsLimited, HashtagErrorMessage.HASHTAGS_MAX_COUNT);
 pristine.addValidator(descriptionInput, (value) => value.length <= CHARACTERS_MAX_COUNT, HashtagErrorMessage.MAX_COMMENT_LENGTH);
 
-const validatePristine = () => pristine.validate();
+const onValidatePristine = () => pristine.validate();
 
 const openUploadForm = () => {
   imgUploadOverlay.classList.remove('hidden');
-  body.classList.remove('modal-open');
+  body.classList.add('modal-open');
   resetScale();
   resetEffects();
   document.addEventListener('keydown', onDocumentKeydown);
@@ -83,6 +83,9 @@ const onSubmit = (evt) => {
       },
       new FormData(form)
     );
+  } else {
+    showLoadFormError();
+    submitFormButton.disabled = false;
   }
 };
 
@@ -93,8 +96,8 @@ function onDocumentKeydown (evt) {
   }
 }
 
-hashtagInput.addEventListener('change', validatePristine);
-descriptionInput.addEventListener('change', validatePristine);
+hashtagInput.addEventListener('change', onValidatePristine);
+descriptionInput.addEventListener('change', onValidatePristine);
 uploadInput.addEventListener('change', onOpenUploadForm);
 submitFormButton.addEventListener('click', onSubmit);
 closeUploadFormButton.addEventListener('click', onCloseUploadForm);

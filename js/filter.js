@@ -23,13 +23,6 @@ const showFilters = () => {
   imgFiltersElement.classList.remove('img-filters--inactive');
 };
 
-const setActiveFilterButton = (activeButton) => {
-  filterButtons.forEach((button) => {
-    button.classList.remove('img-filters__button--active');
-  });
-  activeButton.classList.add('img-filters__button--active');
-};
-
 const getRandomPhotos = (pictures) => {
   const randomPhotos = pictures.sort(() => 0.5 - Math.random());
   return randomPhotos.slice(0, RANDOM_PHOTOS_LIMIT);
@@ -51,7 +44,10 @@ const onFilterChange = debounce((filter, button) => {
       break;
   }
   renderThumbnails(filteredPhotos);
-  setActiveFilterButton(button);
+  filterButtons.forEach((btn) => {
+    btn.classList.remove('img-filters__button--active');
+  });
+  button.classList.add('img-filters__button--active');
 }, TIMEOUT);
 
 filterDefaultButton.addEventListener('click', () => onFilterChange(FilterType.DEFAULT, filterDefaultButton));

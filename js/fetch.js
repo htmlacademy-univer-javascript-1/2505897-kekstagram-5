@@ -1,7 +1,10 @@
 const BASE_URL = 'https://29.javascript.htmlacademy.pro/kekstagram';
 
+
 const getPhotos = (onLoad, onFail) => {
-  fetch(`${BASE_URL}/data`)
+  fetch(`${BASE_URL}/data`, {
+    method: 'GET',
+  })
     .then((response) => {
       if (!response.ok) {
         throw new Error();
@@ -13,7 +16,7 @@ const getPhotos = (onLoad, onFail) => {
 };
 
 const setPhoto = (onLoad, onFail, body) => {
-  fetch(BASE_URL, {
+  fetch(`${BASE_URL}`, {
     method: 'POST',
     body: body,
   })

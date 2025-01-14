@@ -1,4 +1,4 @@
-import {openBigPhoto} from './full-size_pictures.js';
+import {openBigPhoto} from './big-photo.js';
 
 const photoTemplate = document.querySelector('#picture').content.querySelector('.picture');
 const photosListElement = document.querySelector('.pictures');
